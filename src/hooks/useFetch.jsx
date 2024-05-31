@@ -1,0 +1,32 @@
+import { useState, useEffect } from "react";
+
+const useFetch = ({ path }) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const basicURL = 'https://jsonplaceholder.typicode.com';
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${basicURL}/${path}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [path]);
+
+  return { data, loading, error };
+};
+
+export default useFetch;
